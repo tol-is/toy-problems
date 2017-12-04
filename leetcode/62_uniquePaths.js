@@ -5,21 +5,20 @@
  */
 var uniquePaths = function(m, n) {
     const memo = [];
-    for (let i = 0; i < m; i++) {
-        memo[i] = [];
-    }
+    const length = m * n;
     
-    for (let i = m - 1; i >= 0; i--) {
-        for (let j = n - 1; j >= 0; j--) {
-            if (i === m - 1 && j === n - 1) {
-                memo[i][j] = 1;
-            } else {
-                const right = j === n - 1 ? 0 : memo[i][j + 1];
-                const down = i === m - 1 ? 0 : memo[i + 1][j];
-                memo[i][j] = right + down;
-            }
+    for (let i = length - 1; i >= 0; i--) {
+        if (i + n >= length) {
+            memo[i] = 1;
+        } else if ((i + 1) % n === 0) {
+            memo[i] = 1;
+        } else {
+            const right = memo[i + 1];
+            const down = memo[i + n];
+            memo[i] = right + down;
         }
+        
     }
     
-    return memo[0][0];
+    return memo[0];
 };

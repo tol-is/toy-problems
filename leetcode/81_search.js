@@ -20,8 +20,23 @@ var search = function(nums, target) {
 };
 
 const findPivot = (nums, lo = 0, hi = nums.length - 1) => {
-    for (let i = 1; i < nums.length; i++) {
-        if (nums[i] < nums[i - 1]) return i;
+    if (nums[lo] < nums[hi] || lo >= hi) {
+        return lo;
+    } else if (nums[lo] > nums[hi]) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (nums[mid] < nums[lo]) return findPivot(nums, lo, mid);
+        return findPivot(nums, mid + 1, hi);
+    } else {
+        const mid = Math.floor((lo + hi) / 2);
+        if (nums[mid] < nums[lo]) {
+            return findPivot(nums, lo, mid);
+        } else if (nums[mid] > nums[lo]) {
+            return findPivot(nums, mid + 1, hi);
+        } else {
+            for (let i = 1; i < nums.length; i++) {
+                if (nums[i] < nums[i - 1]) return i;
+            }
+            return 0;
+        }
     }
-    return 0;
 };

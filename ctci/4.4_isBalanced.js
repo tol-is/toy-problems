@@ -1,31 +1,18 @@
 export function isBalanced(tree) {
   if (!tree || !tree.root) return true;
-
-  const depths = getDepthsArray(tree.root);
-
-  for (let i = 1; i < depths.length; i += 2) {
-    if (Math.abs(depths[i] - depths[i + 1]) > 1) return false;
-  }
-  return true;
+  return getDepth(tree.root, 0) !== Number.MIN_VALUE;
 }
 
-const getDepthsArray = (node, depths = [], i = 0) => {
-  if (!node) {
-    depths[i] = getLevel(getParentIndex(i));
-    return depths;
-  }
+const getDepth = (node, depth) => {
+  if (!node) return depth - 1;
 
-  const left = getLeftIndex(i);
-  const right = getRightIndex(i);
+  const leftDepth = getDepth(node.left, depth + 1);
+  const rightDepth = getDepth(node.right, depth + 1);
 
-  getDepthsArray(node.left, depths, left);
-  getDepthsArray(node.right, depths, right);
+  const isUnbalanced = leftDepth === Number.MIN_VALUE || 
+    rightDepth === Number.MIN_VALUE || 
+    Math.abs(leftDepth - rightDepth) > 1;
 
-  depths[i] = Math.max(depths[left], depths[right]);
-  return depths;
+  if (isUnbalanced) return Number.MIN_VALUE;
+  return Math.max(leftDepth, rightDepth);
 };
-
-const getParentIndex = i => Math.floor((i - 1) / 2);
-const getLevel = i => Math.floor(Math.log2(i + 1));
-const getLeftIndex = i => i * 2 + 1;
-const getRightIndex = i => i * 2 + 2;

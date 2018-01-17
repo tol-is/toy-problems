@@ -1,20 +1,27 @@
 export function findPathWithSum(tree, value) {
   if (!tree || !tree.root) throw new Error('tree must be valid and non-empty');
 
-  let result = 0;
+  const sumSoFar = [0];
+  const sumCount = { 0: 1 };
 
-  const recursive = (node, targets) => {
-    for (let target of targets) {
-      if (node.val === target) result += 1;
-    }
+  const recurse = (node) => {
+    let result = 0;
 
-    const newTargets = targets.map(n => n - node.val);
-    newTargets.push(value);
+    const prevSum = sumSoFar[sumSoFar.length - 1];
+    const currSum = prevSum + node.val;
 
-    if (node.left) recursive(node.left, newTargets);
-    if (node.right) recursive(node.right, newTargets);
+    sumSoFar.push(currSum);
+    sumCount[currSum] = (sumCount[currSum] || 0) + 1;
+    const remaining = currSum - value;
+
+    result += (sumCount[remaining] || 0);
+    if (node.left) result += recurse(node.left);
+    if (node.right) result += recurse(node.right);
+
+    sumCount[sumSoFar.pop()] -= 1;
+
+    return result;
   };
 
-  recursive(tree.root, [value]);
-  return result;
+  return recurse(tree.root);
 }

@@ -8,25 +8,25 @@ var isValidSudoku = function(board) {
     const boxes = [];
     
     for (let i = 0; i < 9; i++) {
-        rows.push(new Set());
-        cols.push(new Set());
-        boxes.push(new Set());
+        rows.push(0);
+        cols.push(0);
+        boxes.push(0);
     }
     
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
-            const num = board[i][j];
-            if (num === '.') continue;
+            const num = parseInt(board[i][j]);
+            if (isNaN(num)) continue;
             
-            if (rows[i].has(num)) return false;
-            rows[i].add(num);
+            if (rows[i] & (1 << num)) return false;
+            rows[i] |= (1 << num);
             
-            if (cols[j].has(num)) return false;
-            cols[j].add(num);
+            if (cols[j] & (1 << num)) return false;
+            cols[j] |= (1 << num);
             
             const boxIndex = Math.floor(i / 3) * 3 + Math.floor(j / 3);
-            if (boxes[boxIndex].has(num)) return false;
-            boxes[boxIndex].add(num);
+            if (boxes[boxIndex] & (1 << num)) return false;
+            boxes[boxIndex] |= (1 << num);
         }
     }
     

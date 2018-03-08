@@ -10,31 +10,15 @@
  * @return {Interval[]}
  */
 var merge = function(intervals) {
-    if (intervals.length === 0) return [];
-    
     intervals.sort((a, b) => a.start - b.start);
     
     const results = [];
     
-    let curr = intervals.shift();
-    let next = intervals.shift();
-    while (next) {
-        const merged = getMerged(curr, next);
-        if (merged) {
-            curr = merged;
-        } else {
-            results.push(curr);
-            curr = next;
-        }
-        next = intervals.shift();
+    for (let interval of intervals) {
+        const lastInterval = results[results.length - 1];
+        if (!lastInterval || lastInterval.end < interval.start) results.push(interval);
+        else lastInterval.end = Math.max(lastInterval.end, interval.end);
     }
     
-    results.push(curr);
-    
     return results;
-};
-
-const getMerged = (a, b) => {
-    if (b.start <= a.end) return new Interval(a.start, Math.max(a.end, b.end));
-    return null;
 };

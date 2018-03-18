@@ -7,22 +7,17 @@ var canPartition = function(nums) {
     if (sum % 2) return false;
     const target = sum / 2;
     
-    let set = { 0: true };
+    const dp = [];
+    for (let i = 0; i < nums.length + 1; i++) dp[i] = Array(target + 1).fill(false);
+    dp[0][0] = true;
     
-    for (let num of nums) {
-        if (num > target) continue;
-        
-        const nextSet = {};
-        
-        for (let k in set) {
-            const sum = num + parseInt(k);
-            if (sum === target) return true;
-            if (sum > target) continue;
-            nextSet[sum] = true;
+    for (let i = 0; i < nums.length; i++) {
+        for (let j = 0; j <= target; j++) {
+            const take = dp[i][j - nums[i]];
+            const drop = dp[i][j];
+            dp[i + 1][j] = take || drop;
         }
-        
-        Object.assign(set, nextSet);
     }
     
-    return false;
+    return dp[nums.length][target];
 };
